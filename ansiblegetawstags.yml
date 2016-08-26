@@ -1,0 +1,20 @@
+---
+- name: Provision
+  hosts: all
+
+  tasks:
+  - name: Gather EC2 instance metadata
+    action: ec2_facts
+
+  - name: Obtain EC2 tags for this instance
+    local_action:
+       module: ec2_tag
+       region: "{{ ansible_ec2_placement_region }}"
+       resource: "{{ ansible_ec2_instance_id }}"
+       state: list
+    register: ec2_tags
+
+  - debug: var={{ ec2_tags.tags.Name }}
+
+#- name: Set hostname to match EC2 Name
+#  hostname: name={{ ec2_tags.tags.Name }}
